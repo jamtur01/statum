@@ -42,6 +42,9 @@
             </ul>
           </div><!--/.nav-collapse -->
           <ul class="nav">
+            <li><a href="<%= url('/status/list') %>">List Statuses</a></li>
+          </ul>
+          <ul class="nav">
             <li class="active">
               <div class="btn-group">
                 <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#">
@@ -57,7 +60,6 @@
             </li>
           </ul>
           <ul class="nav">
-            <li><a href="<%= url('/status/list') %>">List Statuses</a></li>
             <li><%= link_to 'Login', '/user/login', {:condition => logged_in?, :location => '/user/logout', :name => 'Logout'} %></li>
           </ul>
         </div>
@@ -73,7 +75,7 @@
       <hr>
 
       <footer>
-        <p>&copy; Puppet Labs 2012</p>
+        <p>&copy; James Turnbull 2012</p>
       </footer>
 
     </div><!--/.fluid-container-->

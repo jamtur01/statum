@@ -44,6 +44,7 @@ module Statum
 
     get '/' do
       @u = session[:user]
+      @statuses = Status.all(:login => session[:user][:login])
       erb :index
     end
 
@@ -65,7 +66,7 @@ module Statum
     end
 
     get '/user/create' do
-      erb :create
+      erb :user_create
     end
 
     post '/user/create' do
@@ -86,11 +87,11 @@ module Statum
 
     get '/user/list' do
       @u = User.all
-      erb :list
+      erb :user_list
     end
 
     get '/user/delete' do
-      erb :delete
+      erb :user_delete
     end
 
     post '/user/delete' do
@@ -125,6 +126,11 @@ module Statum
     get '/status/list' do
       @s = Status.all
       erb :status_list
+    end
+
+    get '/status/:id' do |id|
+      @status = Status.get(id)
+      erb :status_item
     end
 
     helpers do
