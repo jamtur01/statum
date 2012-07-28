@@ -107,6 +107,26 @@ module Statum
       end
     end
 
+    post '/status/create' do
+      s = Status.new
+      s.status = params["status"]
+      s.login = session[:user][:login]
+      if s.save
+        redirect '/', :success => 'Status created'
+      else
+        tmp = []
+        u.errors.each do |e|
+          tmp << e
+        end
+        redirect '/', :error => tmp
+      end
+    end
+
+    get '/status/list' do
+      @s = Status.all
+      erb :status_list
+    end
+
     helpers do
       def logged_in?
         return true if session[:user]

@@ -57,6 +57,7 @@
             </li>
           </ul>
           <ul class="nav">
+            <li><a href="<%= url('/status/list') %>">List Statuses</a></li>
             <li><%= link_to 'Login', '/user/login', {:condition => logged_in?, :location => '/user/logout', :name => 'Logout'} %></li>
           </ul>
         </div>

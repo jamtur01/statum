@@ -2,28 +2,29 @@
 <br />
 <br />
 
-<div class="hero-unit">
-<h3>Enter your status</h3>
-<br />
-
+<h3>User: <%= @u.login %></h3>
 <br />
 <br />
 
-</div>
 </div>
 
 <div class="span6">
 <br />
 <br />
 
-<div class="hero-unit">
 <h3>Welcome to Statum</h3>
-<p>User example</p>
-<hr>
-<strong><%= session[:user] %></strong>
-<br />
-<textarea cols='100' rows='5'><%= @u.inspect %></textarea>
 
-</div>
+<form class="well" action="/status/create" method="post">
+  <label>Status<label>
+
+  <textarea name="status" rows='20' class="input-xxlarge"></textarea>
+
+  <br />
+
+  <button type="submit" class="btn">Submit</button>
+</form>
+
+<br />
+
 </div>
 
