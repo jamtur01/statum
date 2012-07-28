@@ -1,15 +1,22 @@
 <div class="span4">
 <br />
+
+<h2>Welcome to Statum</h2>
+
+<p>Statum is a simple status tracker that exists because I am angry with every other simple status tracker.</p>
+
 <br />
 
-<h3>User: <%= @u.login if @u %></h3>
-<br />
-<h3>List of current statuses</h3>
-<br />
+<% if @u %>
+  <h3>User: <%= @u.login %></h3>
+  <br />
+  <h3>List of current statuses</h3>
+  <br />
 
-<% if @statuses %>
-  <% @statuses.each do |status| %>
-    <p><a href="/status/<%= status.id %>">Status <%= status.id %> from <%= status.created_at %></a></p>
+  <% if @statuses %>
+    <% @statuses.each do |status| %>
+      <p><a href="/status/<%= status.id %>">Status <%= status.id %> from <%= status.created_at %></a></p>
+    <% end %>
   <% end %>
 <% end %>
 
@@ -19,20 +26,22 @@
 
 <div class="span6">
 <br />
-<br />
 
-<h3>Welcome to Statum</h3>
+<% if @u %>
+  <h3>Add a new status</h3>
 
-<form class="well" action="/status/create" method="post">
-  <label>Status<label>
+  <form class="well" action="/status/create" method="post">
+    <label>Status<label>
 
-  <textarea name="status" rows='20' class="input-xxlarge"></textarea>
+    <textarea name="status" rows='20' class="input-xxlarge"></textarea>
 
-  <br />
+    <br />
 
-  <button type="submit" class="btn">Submit</button>
-</form>
-
+    <button type="submit" class="btn">Submit</button>
+  </form>
+<% else %>
+<h3>To add a new status create a user or sign in with an existing user</h3>
+<% end %>
 <br />
 
 </div>
