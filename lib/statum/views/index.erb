@@ -4,6 +4,9 @@
 
 <h3>User: <%= @u.login %></h3>
 <br />
+<h3>List of current statuses</h3>
+<br />
+
 <% @statuses.each do |status| %>
   <p><a href="/status/<%= status.id %>">Status <%= status.id %> from <%= status.created_at %></a></p>
 <% end %>
@@ -31,4 +34,3 @@
 <br />
 
 </div>
-

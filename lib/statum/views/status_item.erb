@@ -1,2 +1,10 @@
-  <p><%= "Status: #{@status.status}" %></p>
-  <p><%= "Created at: #{@status.created_at}" %></p>
+<form class="well" action="/status/update" method="post">
+
+  <input name="id" value="<%= @status.id %>" readonly size="4"><br /><br />
+  <textarea name="status" rows='20' class="input-xxlarge"><%= @status.status %></textarea><br />
+  <%= "Created at: #{@status.created_at}" %>
+  <label class="checkbox">
+    <input name="delete" type="checkbox"> Delete
+  </label>
+  <button type="submit" class="btn">Submit</button>
+</form>

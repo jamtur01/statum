@@ -128,6 +128,27 @@ module Statum
       erb :status_list
     end
 
+    post '/status/update' do
+      s = Status.first(params[:id])
+      if params[:delete]
+        if s.destroy
+          redirect '/', :success => 'Status deleted'
+        else
+          tmp = []
+          s.errors.each do |e|
+            tmp << e
+          end
+          redirect back, :error => tmp
+        end
+      else
+        if s.update(:status => params[:status])
+          redirect back, :success => 'Status updated'
+        else
+          redirect back
+        end
+      end
+    end
+
     get '/status/:id' do |id|
       @status = Status.get(id)
       erb :status_item
