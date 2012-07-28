@@ -8,8 +8,8 @@
 <br />
 
 <% if @u %>
-  <h3>User: <%= @u.login %></h3>
-  <br />
+  <h4>Current User:</h4> <%= @u.name %> (<a href="mailto:<%= @u.email %>"><%= @u.email %></a>)
+  <br /><br />
   <h3>List of current statuses</h3>
   <br />
 

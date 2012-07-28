@@ -53,7 +53,7 @@ module Statum
     end
 
     post '/user/login' do
-      if session[:user] = User.authenticate(params["login"], params["password"])
+      if session[:user] = User.authenticate(params[:login], params[:password])
         redirect '/', :success => 'Logged in'
       else
         redirect '/user/login', :error => 'Login failed - try again!'
@@ -71,9 +71,10 @@ module Statum
 
     post '/user/create' do
       u = User.new
-      u.login = params["login"]
-      u.password = params["password"]
-      u.email = params["email"]
+      u.login = params[:login]
+      u.password = params[:password]
+      u.name = params[:name]
+      u.email = params[:email]
       if u.save
         redirect '/user/create', :success => 'User created'
       else
@@ -121,9 +122,9 @@ module Statum
     end
 
     post '/status/create' do
-      redirect '/', :error => 'Can\'t create status. No user logged in' unless @u
+      redirect '/', :error => 'Can\'t create status. No user logged in' unless session[:user]
       s = Status.new
-      s.status = params["status"]
+      s.status = params[:status]
       s.login = session[:user][:login]
       if s.save
         redirect '/', :success => 'Status created'
@@ -163,8 +164,10 @@ module Statum
     end
 
     get '/status/:id' do |id|
+      @u = session[:user]
       @status = Status.first(:id => id)
-      @comments = @status.comments
+      redirect '/' unless @status
+      @comments = @status.comments if @status
       erb :status_item
     end
 

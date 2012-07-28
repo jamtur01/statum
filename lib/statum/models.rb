@@ -19,6 +19,7 @@ class User
       :is_unique => "We already have that email. ",
       :format    => "Doesn't look like an email address to me ... "
     }
+  property :name,             String
   property :salt,             String
   property :created_at,       DateTime, :default => DateTime.now
 

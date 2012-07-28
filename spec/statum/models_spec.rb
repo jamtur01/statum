@@ -4,6 +4,7 @@ require 'statum/models'
 describe User do
   it { should have_property :id   }
   it { should have_property :email   }
+  it { should have_property :name   }
   it { should have_property :login  }
   it { should have_property :hashed_password   }
   it { should have_property :salt   }
