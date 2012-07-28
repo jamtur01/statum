@@ -2,13 +2,15 @@
 <br />
 <br />
 
-<h3>User: <%= @u.login %></h3>
+<h3>User: <%= @u.login if @u %></h3>
 <br />
 <h3>List of current statuses</h3>
 <br />
 
-<% @statuses.each do |status| %>
-  <p><a href="/status/<%= status.id %>">Status <%= status.id %> from <%= status.created_at %></a></p>
+<% if @statuses %>
+  <% @statuses.each do |status| %>
+    <p><a href="/status/<%= status.id %>">Status <%= status.id %> from <%= status.created_at %></a></p>
+  <% end %>
 <% end %>
 
 <br />

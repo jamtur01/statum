@@ -44,7 +44,7 @@ module Statum
 
     get '/' do
       @u = session[:user]
-      @statuses = Status.all(:login => session[:user][:login])
+      @statuses = Status.all(:login => session[:user][:login]) if @u
       erb :index
     end
 
@@ -108,6 +108,7 @@ module Statum
     end
 
     post '/status/create' do
+      redirect '/', :error => 'Can\'t create status. No user logged in' unless @u
       s = Status.new
       s.status = params["status"]
       s.login = session[:user][:login]
