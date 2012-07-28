@@ -74,7 +74,7 @@ module Statum
       u.email = params["email"]
       if u.save
         flash("User created")
-        redirect '/user/list'
+        redirect '/'
       else
         tmp = []
         u.errors.each do |e|
@@ -88,6 +88,26 @@ module Statum
     get '/user/list' do
       @u = User.all
       erb :list
+    end
+
+    get '/user/delete' do
+      erb :delete
+    end
+
+    post '/user/delete' do
+      login = params["login"]
+      u = User.first(:login => login)
+      if u.destroy
+        flash("User deleted")
+        redirect '/'
+      else
+        tmp = []
+        u.errors.each do |e|
+          tmp << (e.join("<br/>"))
+        end
+        flash(tmp)
+        redirect '/user/delete'
+      end
     end
 
     helpers do

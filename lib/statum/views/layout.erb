@@ -39,11 +39,26 @@
           <div class="nav-collapse">
             <ul class="nav">
               <li class="active"><a href="<%= url('/') %>">Home</a></li>
-              <li class="active"><a href="<%= url('/user/list') %>">List Users</a></li>
-              <li class="active"><a href="<%= url('/user/create') %>">Create User</a></li>
-              <li class="active"><%= link_to 'Login', '/user/login', {:condition => logged_in?, :location => '/user/logout', :name => 'Logout'} %></li>
             </ul>
           </div><!--/.nav-collapse -->
+          <ul class="nav">
+            <li class="active">
+              <div class="btn-group">
+                <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#">
+                  Admin
+                  <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu">
+                  <a href="<%= url('/user/list') %>">List Users</a>
+                  <a href="<%= url('/user/create') %>">Create User</a>
+                  <a href="<%= url('/user/delete') %>">Delete User</a>
+                </ul>
+              </div>
+            </li>
+          </ul>
+          <ul class="nav">
+            <li class="active"><%= link_to 'Login', '/user/login', {:condition => logged_in?, :location => '/user/logout', :name => 'Logout'} %></li>
+          </ul>
         </div>
       </div>
     </div>
