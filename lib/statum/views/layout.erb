@@ -57,7 +57,7 @@
             </li>
           </ul>
           <ul class="nav">
-            <li class="active"><%= link_to 'Login', '/user/login', {:condition => logged_in?, :location => '/user/logout', :name => 'Logout'} %></li>
+            <li><%= link_to 'Login', '/user/login', {:condition => logged_in?, :location => '/user/logout', :name => 'Logout'} %></li>
           </ul>
         </div>
       </div>
@@ -65,8 +65,8 @@
 
     <div class="container-fluid">
       <div class="row-fluid">
-            <%= show_flash %>
-            <%= yield %>
+             <%= styled_flash %>
+             <%= yield %>
       </div><!--/row-->
 
       <hr>

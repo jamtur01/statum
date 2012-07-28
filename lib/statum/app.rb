@@ -3,14 +3,17 @@ $: << File.dirname(__FILE__)
 require 'sinatra'
 require 'sinatra/url_for'
 require 'sinatra/static_assets'
+require 'sinatra/flash'
+require 'sinatra/redirect_with_flash'
 require 'data_mapper'
-require 'json'
-require 'yaml'
+require 'pp'
 
 module Statum
   class Application < Sinatra::Base
 
     register Sinatra::StaticAssets
+    register Sinatra::Flash
+    helpers Sinatra::RedirectWithFlash
 
     enable :sessions
 
@@ -18,6 +21,7 @@ module Statum
     set :views, File.join(File.dirname(__FILE__), 'views')
 
     configure :development do
+      set    :session_secret, "here be dragons"
       #load_configuration("config/config.yml", "APP_CONFIG")
     end
 
@@ -49,18 +53,15 @@ module Statum
 
     post '/user/login' do
       if session[:user] = User.authenticate(params["login"], params["password"])
-        flash("Login successful")
-        redirect '/'
+        redirect '/', :success => 'Logged in'
       else
-        flash("Login failed - Try again")
-        redirect '/user/login'
+        redirect '/user/login', :error => 'Login failed - try again!'
       end
     end
 
     get '/user/logout' do
       session[:user] = nil
-      flash("Logout successful")
-      redirect '/'
+      redirect '/', :success => 'Logout successful!'
     end
 
     get '/user/create' do
@@ -73,15 +74,13 @@ module Statum
       u.password = params["password"]
       u.email = params["email"]
       if u.save
-        flash("User created")
-        redirect '/'
+        redirect '/user/create', :success => 'User created'
       else
         tmp = []
         u.errors.each do |e|
-          tmp << (e.join("<br/>"))
+          tmp << e
         end
-       flash(tmp)
-       redirect '/user/create'
+        redirect '/user/create', :error => tmp
       end
     end
 
@@ -98,15 +97,13 @@ module Statum
       login = params["login"]
       u = User.first(:login => login)
       if u.destroy
-        flash("User deleted")
-        redirect '/'
+        redirect '/user/delete', :success => 'User deleted'
       else
         tmp = []
         u.errors.each do |e|
-          tmp << (e.join("<br/>"))
+          tmp << e
         end
-        flash(tmp)
-        redirect '/user/delete'
+        redirect '/user/delete', :error => tmp
       end
     end
 
@@ -130,18 +127,6 @@ module Statum
         1.upto(len) { |i| str << chars[rand(chars.size-1)] }
         return str
       end
-
-      def flash(msg)
-        session[:flash] = msg
-      end
-
-      def show_flash
-        if session[:flash]
-          tmp = session[:flash]
-          session[:flash] = false
-          "<fieldset><legend>Notice</legend><p>#{tmp}</p></fieldset>"
-        end
-     end
     end
 
   end
