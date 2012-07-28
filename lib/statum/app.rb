@@ -22,19 +22,16 @@ module Statum
 
     configure :development do
       set    :session_secret, "here be dragons"
-      #load_configuration("config/config.yml", "APP_CONFIG")
     end
 
     configure :production do
       log = File.new("log/production.log", "a")
       STDOUT.reopen(log)
       STDERR.reopen(log)
-      #load_configuration("config/config.yml", "APP_CONFIG")
     end
 
-    enable :logging, :dump_errors, :raise_errors
+    enable :logging, :dump_errors, :raise_errors, :show_exceptions
     DataMapper.setup(:default, "sqlite3:db/statum.db")
-    enable :show_exceptions
 
     require 'models'
 
@@ -78,16 +75,12 @@ module Statum
       if u.save
         redirect '/user/create', :success => 'User created'
       else
-        tmp = []
-        u.errors.each do |e|
-          tmp << e
-        end
-        redirect '/user/create', :error => tmp
+        redirect '/user/create', :error => errors(u)
       end
     end
 
     get '/user/list' do
-      @u = User.all
+      @users = User.all
       erb :user_list
     end
 
@@ -100,21 +93,13 @@ module Statum
         s = Status.all(:login => params[:login])
         if s.destroy
         else
-          tmp = []
-          s.errors.each do |e|
-            tmp << e
-          end
-          redirect '/user/delete', :error => tmp
+          redirect '/user/delete', :error => errors(s)
         end
         if u.destroy
           session[:user] = nil
           redirect '/user/delete', :success => 'User and statuses deleted'
         else
-          tmp = []
-          u.errors.each do |e|
-            tmp << e
-          end
-          redirect '/user/delete', :error => tmp
+          redirect '/user/delete', :error => errors(u)
         end
       else
         redirect '/user/delete', :error => 'User does not exist'
@@ -129,11 +114,7 @@ module Statum
       if s.save
         redirect '/', :success => 'Status created'
       else
-        tmp = []
-        s.errors.each do |e|
-          tmp << e
-        end
-        redirect '/', :error => tmp
+        redirect '/', :error => errors(s)
       end
     end
 
@@ -148,11 +129,7 @@ module Statum
         if s.destroy
           redirect '/', :success => 'Status deleted'
         else
-          tmp = []
-          s.errors.each do |e|
-            tmp << e
-          end
-          redirect back, :error => tmp
+          redirect back, :error => errors(s)
         end
       else
         if s.update(:status => params[:status])
@@ -164,10 +141,11 @@ module Statum
     end
 
     get '/status/:id' do |id|
-      @u = session[:user]
-      @status = Status.first(:id => id)
-      redirect '/' unless @status
-      @comments = @status.comments if @status
+      if @status = Status.first(:id => id)
+        @comments = @status.comments
+      else
+        redirect '/' unless @status
+      end
       erb :status_item
     end
 
@@ -180,15 +158,19 @@ module Statum
         :body  => params[:body])
           redirect back, :success => 'Comment created'
       else
-        tmp = []
-        s.errors.each do |e|
-          tmp << e
-        end
-        redirect back, :error => tmp
+        redirect back, :error => errors(s)
       end
     end
 
     helpers do
+      def errors(obj)
+        tmp = []
+        obj.errors.each do |e|
+          tmp << e
+        end
+        tmp
+      end
+
       def logged_in?
         return true if session[:user]
         nil
