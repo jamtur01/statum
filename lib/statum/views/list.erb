@@ -1,0 +1,5 @@
+<% @u.each do |user| %>
+  <p><%= "Login: #{user.login}" %></p>
+  <p><%= "Email: #{user.email}" %></p>
+  <p><%= "Created at: #{user.created_at}" %></p>
+<% end %>
