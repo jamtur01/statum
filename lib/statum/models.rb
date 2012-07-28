@@ -46,7 +46,7 @@ end
 class Status
   include DataMapper::Resource
 
-  has n, :comments
+  has n, :comments, :constraint => :destroy
 
   property :id, Serial
   property :status, Text, :required => true

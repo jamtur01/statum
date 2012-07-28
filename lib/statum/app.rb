@@ -96,8 +96,18 @@ module Statum
 
     post '/user/delete' do
       u = User.first(:login => params[:login])
+      s = Status.all(:login => params[:login])
+      if s.destroy
+      else
+        tmp = []
+        s.errors.each do |e|
+          tmp << e
+        end
+        redirect '/user/delete', :error => tmp
+      end
       if u.destroy
-        redirect '/user/delete', :success => 'User deleted'
+        session[:user] = nil
+        redirect '/user/delete', :success => 'User and statuses deleted'
       else
         tmp = []
         u.errors.each do |e|
