@@ -2,7 +2,7 @@
 
 <form class="well" action="/status/update" method="post">
 
-  <input name="id" value="<%= status.id %>" readonly size="4"><br /><br />
+  <input type="hidden" name="id" value="<%= status.id %>">
   <textarea name="status" rows='20' class="input-xxlarge"><%= status.status %></textarea><br />
   <%= "Created at: #{status.created_at}" %>
   <label class="checkbox">

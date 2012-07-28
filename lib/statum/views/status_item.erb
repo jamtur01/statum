@@ -1,10 +1,27 @@
 <form class="well" action="/status/update" method="post">
-
-  <input name="id" value="<%= @status.id %>" readonly size="4"><br /><br />
+  <input type="hidden" name="id" value="<%= @status.id %>">
   <textarea name="status" rows='20' class="input-xxlarge"><%= @status.status %></textarea><br />
   <%= "Created at: #{@status.created_at}" %>
   <label class="checkbox">
     <input name="delete" type="checkbox"> Delete
   </label>
+  <button type="submit" class="btn">Submit</button>
+</form>
+
+<h3>Comments</h3>
+<br />
+
+<% @comments.each do |comment| %>
+  Comment Author: <%= comment.login %> (<a href="mailto:<%= comment.email %>"><%= comment.email %></a>)<br />
+  Comment Time: <%= comment.created_at %></br />
+  Comment: <%= comment.body %><br/ >
+  <br />
+<% end %>
+<br />
+
+<h3>Add comment</h3>
+<form class="well" action="/status/comment" method="post">
+  <input type="hidden" name="id" value=<%= @status.id %>>
+  <textarea name="body" rows='5' class="input-xxlarge"></textarea><br />
   <button type="submit" class="btn">Submit</button>
 </form>

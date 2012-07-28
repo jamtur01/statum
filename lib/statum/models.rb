@@ -46,13 +46,30 @@ end
 class Status
   include DataMapper::Resource
 
+  has n, :comments
+
   property :id, Serial
   property :status, Text, :required => true
-  property :created_at, DateTime
+  property :created_at, DateTime, :default => DateTime.now
   property :updated_on, DateTime
   property :login, String, :required => true
 
   validates_presence_of :login, :status
+end
+
+class Comment
+  include DataMapper::Resource
+
+  belongs_to :status
+
+  property :id,         Serial
+  property :login,      String, :required => true
+  property :email,      String, :required => true
+  property :url,        String, :required => true
+  property :body,       Text, :required => true
+  property :created_at, DateTime, :default => DateTime.now
+
+  validates_presence_of :login, :email, :url, :body
 end
 
 DataMapper.finalize

@@ -95,8 +95,7 @@ module Statum
     end
 
     post '/user/delete' do
-      login = params["login"]
-      u = User.first(:login => login)
+      u = User.first(:login => params[:login])
       if u.destroy
         redirect '/user/delete', :success => 'User deleted'
       else
@@ -116,7 +115,7 @@ module Statum
         redirect '/', :success => 'Status created'
       else
         tmp = []
-        u.errors.each do |e|
+        s.errors.each do |e|
           tmp << e
         end
         redirect '/', :error => tmp
@@ -129,7 +128,7 @@ module Statum
     end
 
     post '/status/update' do
-      s = Status.first(params[:id])
+      s = Status.first(:id => params[:id])
       if params[:delete]
         if s.destroy
           redirect '/', :success => 'Status deleted'
@@ -150,8 +149,26 @@ module Statum
     end
 
     get '/status/:id' do |id|
-      @status = Status.get(id)
+      @status = Status.first(:id => id)
+      @comments = @status.comments
       erb :status_item
+    end
+
+    post '/status/comment' do
+      s = Status.first(:id => params[:id])
+      if s.comments.create(
+        :login => session[:user][:login],
+        :email => session[:user][:email],
+        :url   => "url",
+        :body  => params[:body])
+          redirect back, :success => 'Comment created'
+      else
+        tmp = []
+        s.errors.each do |e|
+          tmp << e
+        end
+        redirect back, :error => tmp
+      end
     end
 
     helpers do
