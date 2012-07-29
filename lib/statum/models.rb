@@ -65,12 +65,13 @@ class Comment
 
   property :id,         Serial
   property :login,      String, :required => true
+  property :name,       String, :required => true
   property :email,      String, :required => true
   property :url,        String, :required => true
   property :body,       Text, :required => true
   property :created_at, DateTime, :default => DateTime.now
 
-  validates_presence_of :login, :email, :url, :body
+  validates_presence_of :login, :name, :email, :url, :body
 end
 
 DataMapper.finalize

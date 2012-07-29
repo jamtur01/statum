@@ -28,9 +28,11 @@ describe Comment do
   it { should have_property :id   }
   it { should have_property :body   }
   it { should have_property :email   }
+  it { should have_property :name   }
   it { should have_property :login   }
   it { should have_property :url   }
   it { should validate_presence_of :email }
+  it { should validate_presence_of :name }
   it { should validate_presence_of :login }
   it { should validate_presence_of :body }
   it { should validate_presence_of :url }

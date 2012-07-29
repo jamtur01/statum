@@ -1,6 +1,31 @@
+$:.unshift(File.expand_path(File.join(File.dirname(__FILE__), "lib")))
+
 require 'rubygems'
 require 'rspec/core/rake_task'
 require 'bundler/gem_tasks'
+require 'rubygems'
+require 'sinatra'
+require 'dm-core'
+require 'dm-migrations'
+require 'statum'
+
+namespace :db do
+
+  desc "Migrate the database"
+  task :migrate do
+    DataMapper.auto_migrate!
+  end
+  
+  desc "Add some test users"
+  task :testusers do
+    u = User.new
+    u.login = "test"
+    u.name = "Test User"
+    u.email = "test@example.com"
+    u.password = "test"
+    u.save
+  end
+end
 
 task :default => :help
 

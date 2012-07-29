@@ -158,11 +158,12 @@ module Statum
     end
 
     post '/status/comment' do
-      authenicated!
+      authenticated!
       s = Status.first(:id => params[:id])
       if s.comments.create(
         :login => session[:user][:login],
         :email => session[:user][:email],
+        :name  => session[:user][:name],
         :url   => "url",
         :body  => params[:body])
           redirect back, :success => 'Comment created'

@@ -12,7 +12,7 @@
 <br />
 
 <% @comments.each do |comment| %>
-  Comment Author: <%= comment.login %> (<a href="mailto:<%= comment.email %>"><%= comment.email %></a>)<br />
+  Comment Author: <%= comment.name %> (<a href="mailto:<%= comment.email %>"><%= comment.email %></a>)<br />
   Comment Time: <%= comment.created_at %></br />
   Comment: <%= comment.body %><br/ >
   <br />
