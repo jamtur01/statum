@@ -30,9 +30,8 @@ namespace :db do
       :password => "test")
       puts "User created"
     else
-     pp t.errors
+     puts t.errors
     end
-    pp User.all
   end
 end
 

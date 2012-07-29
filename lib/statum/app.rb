@@ -171,6 +171,18 @@ module Statum
       erb :status_list
     end
 
+    get '/status/team' do
+      authenticated!
+      @teams = Team.all
+      @users = @teams.users
+      @users.each do |u|
+        pp @users
+        @statuses = Status.all(:login => u.login)
+        pp @statuses
+      end
+      erb :status_team
+    end
+
     post '/status/update' do
       authenticated!
       s = Status.first(:id => params[:id])
