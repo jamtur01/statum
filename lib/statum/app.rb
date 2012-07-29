@@ -63,10 +63,12 @@ module Statum
     end
 
     get '/user/create' do
+      authenticated!
       erb :user_create
     end
 
     post '/user/create' do
+      authenticated!
       u = User.new
       u.login = params[:login]
       u.password = params[:password]
@@ -80,15 +82,18 @@ module Statum
     end
 
     get '/user/list' do
+      authenticated!
       @users = User.all
       erb :user_list
     end
 
     get '/user/delete' do
+      authenticated!
       erb :user_delete
     end
 
     post '/user/delete' do
+      authenticated!
       if u = User.first(:login => params[:login])
         s = Status.all(:login => params[:login])
         if s.destroy
@@ -107,7 +112,7 @@ module Statum
     end
 
     post '/status/create' do
-      redirect '/', :error => 'Can\'t create status. No user logged in' unless session[:user]
+      authenticated!
       s = Status.new
       s.status = params[:status]
       s.login = session[:user][:login]
@@ -119,11 +124,13 @@ module Statum
     end
 
     get '/status/list' do
+      authenticated!
       @s = Status.all
       erb :status_list
     end
 
     post '/status/update' do
+      authenticated!
       s = Status.first(:id => params[:id])
       if params[:delete]
         if s.destroy
@@ -141,6 +148,7 @@ module Statum
     end
 
     get '/status/:id' do |id|
+      authenticated!
       if @status = Status.first(:id => id)
         @comments = @status.comments
       else
@@ -150,6 +158,7 @@ module Statum
     end
 
     post '/status/comment' do
+      authenicated!
       s = Status.first(:id => params[:id])
       if s.comments.create(
         :login => session[:user][:login],
@@ -174,6 +183,12 @@ module Statum
       def logged_in?
         return true if session[:user]
         nil
+      end
+
+      def authenticated!
+        unless session[:user]
+          redirect '/', :error => 'Unauthorised without login.'
+        end
       end
 
       def link_to(name, location, alternative = false)
