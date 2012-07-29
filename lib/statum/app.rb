@@ -31,6 +31,7 @@ module Statum
     end
 
     enable :logging, :dump_errors, :raise_errors, :show_exceptions
+    #DataMapper::Logger.new(STDOUT, :debug)
     DataMapper.setup(:default, "sqlite3:db/statum.db")
 
     require 'models'
@@ -41,7 +42,7 @@ module Statum
 
     get '/' do
       @u = session[:user]
-      @statuses = Status.all(:login => session[:user][:login]) if @u
+      @statuses = User.first(:login => session[:user][:login]).items if @u
       erb :index
     end
 
@@ -137,7 +138,7 @@ module Statum
     post '/user/delete' do
       authenticated!
       if u = User.first(:login => params[:login])
-        s = Status.all(:login => params[:login])
+        s = Item.all(:user_login => params[:login])
         if s.destroy
         else
           redirect '/user/delete', :error => errors(s)
@@ -155,46 +156,39 @@ module Statum
 
     post '/status/create' do
       authenticated!
-      s = Status.new
-      s.status = params[:status]
-      s.login = session[:user][:login]
-      if s.save
-        redirect '/', :success => 'Status created'
+      u = User.first(:login => session[:user][:login])
+      if u.items.create(
+        :status  => params[:status])
+          redirect '/', :success => 'Status created'
       else
-        redirect '/', :error => errors(s)
+        redirect '/', :error => errors(u)
       end
     end
 
     get '/status/list' do
       authenticated!
-      @s = Status.all
+      @s = Item.all
       erb :status_list
     end
 
     get '/status/team' do
       authenticated!
       @teams = Team.all
-      @users = @teams.users
-      @users.each do |u|
-        pp @users
-        @statuses = Status.all(:login => u.login)
-        pp @statuses
-      end
       erb :status_team
     end
 
     post '/status/update' do
       authenticated!
-      s = Status.first(:id => params[:id])
+      s = Item.first(:id => params[:id])
       if params[:delete]
         if s.destroy
-          redirect '/', :success => 'Status deleted'
+          redirect '/', :success => 'Item deleted'
         else
           redirect back, :error => errors(s)
         end
       else
         if s.update(:status => params[:status])
-          redirect back, :success => 'Status updated'
+          redirect back, :success => 'Item updated'
         else
           redirect back
         end
@@ -203,7 +197,7 @@ module Statum
 
     get '/status/:id' do |id|
       authenticated!
-      if @status = Status.first(:id => id)
+      if @status = Item.first(:id => id)
         @comments = @status.comments
       else
         redirect '/' unless @status
@@ -213,7 +207,7 @@ module Statum
 
     post '/status/comment' do
       authenticated!
-      s = Status.first(:id => params[:id])
+      s = Item.first(:id => params[:id])
       if s.comments.create(
         :login => session[:user][:login],
         :email => session[:user][:email],

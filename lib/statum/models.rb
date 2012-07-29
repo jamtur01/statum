@@ -2,7 +2,6 @@ require 'digest/sha1'
 require 'dm-validations'
 require 'date'
 
-#DataMapper::Logger.new($stdout, :debug)
 #DataMapper::Model.raise_on_save_failure = true
 
 class Team
@@ -15,21 +14,14 @@ class Team
   property :description,      Text
 
   validates_presence_of :name, :description
-  #validates_with_method :unique_text
-
-  #def unique_text
-  #  result = true
-  #  Team.all(:name => self.name).each do |k|
-  #    result = false if k.name == self.name
-  #  end
-  #  result
-  #end
 end
 
 class User
   include DataMapper::Resource
 
   belongs_to :team
+
+  has n, :items
 
   property :id,               Serial
   property :login,            String, :key => true, :length => (3..40), :required => true, :unique => true,
@@ -50,7 +42,6 @@ class User
   property :created_at,       DateTime, :default => DateTime.now
 
   attr_accessor :password
-  validates_presence_of :password
 
   def password=(pass)
     @password = pass
@@ -70,24 +61,25 @@ class User
   end
 end
 
-class Status
+class Item
   include DataMapper::Resource
+
+  belongs_to :user
 
   has n, :comments, :constraint => :destroy
 
   property :id, Serial
-  property :status, Text, :required => true
+  property :status, Text
   property :created_at, DateTime, :default => DateTime.now
   property :updated_on, DateTime
-  property :login, String, :required => true
 
-  validates_presence_of :login, :status
+  validates_presence_of :status
 end
 
 class Comment
   include DataMapper::Resource
 
-  belongs_to :status
+  belongs_to :item
 
   property :id,         Serial
   property :login,      String, :required => true
