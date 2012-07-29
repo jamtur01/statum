@@ -23,12 +23,33 @@ describe Statum::Application do
     end
   end
 
-  describe "GET '/user/create'" do
-    it "should return the user creation page." do
-      get '/user/create'
+  describe "GET '/team/create'" do
+    it "should return the team creation page." do
+      get '/team/create'
       last_response.should be_ok
     end
   end
+
+  describe "GET '/team/list'" do
+    it "should return the team listing page." do
+      get '/team/list'
+      last_response.should be_ok
+    end
+  end
+
+  describe "GET '/team/delete'" do
+    it "should return the team deletion page." do
+      get '/team/delete'
+      last_response.should be_ok
+    end
+  end
+
+ describe "GET '/user/create'" do
+    it "should return the user creation page." do
+      get '/user/create'
+      last_response.should be_ok
+    end 
+  end 
 
   describe "GET '/user/list'" do
     it "should return the user listing page." do
@@ -43,7 +64,6 @@ describe Statum::Application do
       last_response.should be_ok
     end
   end
-
   describe "GET '/status/list'" do
     it "should return the status listing page." do
       get '/status/list'

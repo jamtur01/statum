@@ -15,15 +15,24 @@ namespace :db do
   task :migrate do
     DataMapper.auto_migrate!
   end
-  
+
   desc "Add some test users"
   task :testusers do
-    u = User.new
-    u.login = "test"
-    u.name = "Test User"
-    u.email = "test@example.com"
-    u.password = "test"
-    u.save
+    t = Team.new
+    t.name = "Test"
+    t.description = "This is a test team"
+    t.save!
+    t = Team.first(:name => "Test")
+    if t.users.create(
+      :login    => "test",
+      :name     => "Test User",
+      :email    => "test@example.com",
+      :password => "test")
+      puts "User created"
+    else
+     pp t.errors
+    end
+    pp User.all
   end
 end
 

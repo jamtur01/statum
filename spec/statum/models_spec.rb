@@ -1,6 +1,13 @@
 require File.dirname(__FILE__) + '/../spec_helper'
 require 'statum/models'
 
+describe Team do
+  it { should have_property :id   }
+  it { should have_property :name   }
+  it { should have_property :description   }
+  it { should validate_uniqueness_of :name }
+end
+
 describe User do
   it { should have_property :id   }
   it { should have_property :email   }

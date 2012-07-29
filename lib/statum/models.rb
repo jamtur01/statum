@@ -2,8 +2,34 @@ require 'digest/sha1'
 require 'dm-validations'
 require 'date'
 
+#DataMapper::Logger.new($stdout, :debug)
+#DataMapper::Model.raise_on_save_failure = true
+
+class Team
+  include DataMapper::Resource
+
+  has n, :users
+
+  property :id,               Serial
+  property :name,             String, :key => true, :required => true, :unique => true
+  property :description,      Text
+
+  validates_presence_of :name, :description
+  #validates_with_method :unique_text
+
+  #def unique_text
+  #  result = true
+  #  Team.all(:name => self.name).each do |k|
+  #    result = false if k.name == self.name
+  #  end
+  #  result
+  #end
+end
+
 class User
   include DataMapper::Resource
+
+  belongs_to :team
 
   property :id,               Serial
   property :login,            String, :key => true, :length => (3..40), :required => true, :unique => true,

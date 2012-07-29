@@ -11,6 +11,13 @@
 
   <label>Email:</label>
   <input name="email" class="span3" type="text" size="30" />
+
+  <label>Team:</label>
+  <select name="team">
+    <% @teams.each do |team| %>
+      <option value="<%= team.name %>"><%= team.name %></option>
+    <% end %>
+  </select>
   <br />
 
   <button type="submit" class="btn">Submit</button>

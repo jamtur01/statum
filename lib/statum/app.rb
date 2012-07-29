@@ -62,22 +62,64 @@ module Statum
       redirect '/', :success => 'Logout successful!'
     end
 
+    get '/team/create' do
+      authenticated!
+      erb :team_create
+    end
+
+    post '/team/create' do
+      authenticated!
+      t = Team.new
+      t.name = params[:name]
+      t.description = params[:description]
+      if t.save
+        redirect '/team/create', :success => 'Team created'
+      else
+        redirect '/team/create', :error => errors(t)
+      end
+    end
+
+    get '/team/list' do
+      authenticated!
+      @teams = Team.all
+      erb :team_list
+    end
+
+    get '/team/delete' do
+      authenticated!
+      erb :team_delete
+    end
+
+    post '/team/delete' do
+      authenticated!
+      if t = Team.first(:name => params[:name])
+        if t.destroy
+          redirect '/team/delete', :success => 'Team deleted'
+        else
+          redirect '/user/delete', :error => errors(t)
+        end
+      else
+        redirect '/team/delete', :error => 'Team does not exist'
+      end
+    end
+
     get '/user/create' do
       authenticated!
+      @teams = Team.all
       erb :user_create
     end
 
     post '/user/create' do
       authenticated!
-      u = User.new
-      u.login = params[:login]
-      u.password = params[:password]
-      u.name = params[:name]
-      u.email = params[:email]
-      if u.save
+      t = Team.first(:name => params[:team])
+      if t.users.create(
+        :login    => params[:login],
+        :password => params[:password],
+        :name     => params[:name],
+        :email    => params[:email])
         redirect '/user/create', :success => 'User created'
       else
-        redirect '/user/create', :error => errors(u)
+        redirect '/user/create', :error => errors(t)
       end
     end
 
