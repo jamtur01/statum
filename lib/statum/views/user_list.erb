@@ -1,6 +1,23 @@
-<% @users.each do |user| %>
-  <p><%= "Login: #{user.login}" %></p>
-  <p><%= "Name: #{user.name}" %></p>
-  <p><%= "Email: #{user.email}" %></p>
-  <p><%= "Created at: #{user.created_at}" %></p>
-<% end %>
+<div class="page-header">
+  <h1>User List</h1>
+</div>
+
+
+    <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Login</th>
+        <th>Name</th>
+        <th>Email</th>
+      </tr>
+    </thead>
+    <tbody>
+       <% @users.each do |user| %>
+       <tr>
+        <td><%= user.login %></td>
+        <td><%= user.name %></td>
+        <td><%= user.email %></td>
+      </tr>
+      <% end %>
+    </tbody>
+    </table>

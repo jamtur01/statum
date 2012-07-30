@@ -1,4 +1,21 @@
-<% @teams.each do |team| %>
-  <p><%= "Name: #{team.name}" %></p>
-  <p><%= "Description: #{team.description}" %></p>
-<% end %>
+<div class="page-header">
+  <h1>Team List</h1>
+</div>
+
+
+    <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Team</th>
+        <th>Description</th>
+      </tr>
+    </thead>
+    <tbody>
+       <% @teams.each do |team| %> 
+       <tr>
+        <td><%= team.name %></td>
+        <td><%= team.description %></td>
+      </tr>
+      <% end %>
+    </tbody>
+    </table>

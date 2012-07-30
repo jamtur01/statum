@@ -1,21 +1,23 @@
 <div class="span4">
 <br />
 
-<h2>Welcome to Statum</h2>
+<div class="page-header">
+  <h1>Welcome to Statum</h1>
+</div>
 
 <p>Statum is a simple status tracker that exists because I am angry with every other simple status tracker.</p>
 
 <br />
 
 <% if @u %>
-  <h4>Current User:</h4> <%= @u.name %> (<a href="mailto:<%= @u.email %>"><%= @u.email %></a>)
+  <h4>Current User:</h4> <br /><%= @u.name %> (<a href="mailto:<%= @u.email %>"><%= @u.email %></a>)
   <br /><br />
-  <h3>List of current statuses</h3>
+  <h3>Current Status Updates</h3>
   <br />
 
   <% if @statuses %>
     <% @statuses.each do |status| %>
-      <p><a href="/status/<%= status.id %>">Status <%= status.id %> from <%= status.created_at %></a></p>
+      <p><a href="/status/<%= status.id %>"><%= status.created_at.strftime('%m/%d/%Y') %></a></p>
     <% end %>
   <% end %>
 <% end %>
@@ -26,9 +28,10 @@
 
 <div class="span6">
 <br />
+<br />
 
 <% if @u %>
-  <h3>Add a new status</h3>
+  <h3>Add a new status update</h3>
 
   <form class="well" action="/status/create" method="post">
     <label>Status<label>
@@ -40,7 +43,7 @@
     <button type="submit" class="btn">Submit</button>
   </form>
 <% else %>
-<h3>To add a new status create a user or sign in with an existing user</h3>
+<h3>To add a new status update log in.</h3>
 <% end %>
 <br />
 

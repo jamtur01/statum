@@ -1,10 +1,15 @@
-<% @s.each do |status| %>
+<div class="page-header">
+  <h1>Your Status Updates</h1>
+</div>
+
+<% @statuses.each do |status| %>
+
+<h3>Status from <a href="/status/<%= status.id %>"><%= status.created_at.strftime('%m/%d/%Y') %></a></h3>
 
 <form class="well" action="/status/update" method="post">
-
   <input type="hidden" name="id" value="<%= status.id %>">
   <textarea name="status" rows='20' class="input-xxlarge"><%= status.status %></textarea><br />
-  <%= "Created at: #{status.created_at}" %>
+  <%= "Created on #{status.created_at.strftime('%m/%d/%Y')}" %>
   <label class="checkbox">
     <input name="delete" type="checkbox"> Delete
   </label>

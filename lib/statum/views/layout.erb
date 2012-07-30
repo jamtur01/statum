@@ -43,28 +43,31 @@
             </ul>
           </div><!--/.nav-collapse -->
           <ul class="nav">
-            <li><a href="<%= url('/status/team') %>">Show status by team</a></li>
-            <li><a href="<%= url('/status/list') %>">Show your statuses</a></li>
+            <li><a href="<%= url('/status/list') %>">Your status</a></li>
+            <li><a href="<%= url('/status/team') %>">Status by team</a></li>
           </ul>
           <ul class="nav">
             <li class="active">
               <div class="btn-group">
                 <a class="btn btn-inverse dropdown-toggle" data-toggle="dropdown" href="#">
-                  Admin
+                  Administration
                   <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu">
-                  <a href="<%= url('/team/list') %>">List Teams</a>
-                  <a href="<%= url('/team/create') %>">Create Team</a>
-                  <a href="<%= url('/team/delete') %>">Delete Team</a>
-                  <a href="<%= url('/user/list') %>">List Users</a>
-                  <a href="<%= url('/user/create') %>">Create User</a>
-                  <a href="<%= url('/user/delete') %>">Delete User</a>
+                  <li class="nav-header">Team Management</li>
+                  <li><a href="<%= url('/team/list') %>">List Teams</a></li>
+                  <li><a href="<%= url('/team/create') %>">Create Team</a></li>
+                  <li><a href="<%= url('/team/delete') %>">Delete Team</a></li>
+                  <li class="divider"></li>
+                  <li class="nav-header">User Mangement</li>
+                  <li><a href="<%= url('/user/list') %>">List Users</a></li>
+                  <li><a href="<%= url('/user/create') %>">Create User</a></li>
+                  <li><a href="<%= url('/user/delete') %>">Delete User</a></li>
                 </ul>
               </div>
             </li>
           </ul>
-          <ul class="nav">
+          <ul class="nav pull-right">
             <li><%= link_to 'Login', '/user/login', {:condition => logged_in?, :location => '/user/logout', :name => 'Logout'} %></li>
           </ul>
         </div>

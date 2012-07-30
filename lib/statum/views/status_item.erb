@@ -1,7 +1,11 @@
+<div class="page-header">
+  <h1>Status Update</h1>
+</div>
+
 <form class="well" action="/status/update" method="post">
   <input type="hidden" name="id" value="<%= @status.id %>">
   <textarea name="status" rows='20' class="input-xxlarge"><%= @status.status %></textarea><br />
-  <%= "Created at: #{@status.created_at}" %>
+  <%= "Created: #{@status.created_at.strftime('%m/%d/%Y')}" %>
   <label class="checkbox">
     <input name="delete" type="checkbox"> Delete
   </label>
@@ -12,14 +16,29 @@
 <br />
 
 <% @comments.each do |comment| %>
-  <b>Author:</b> <%= comment.name %> (<a href="mailto:<%= comment.email %>"><%= comment.email %></a>)<br />
-  <b>Time:</b>   <%= comment.created_at %></br />
-  <b>Comment:</b> <br />        <%= comment.body %><br/ >
-  <br />
-<% end %>
-<br />
 
-<h3>Add comment</h3>
+<table class="table table-bordered">
+      <thead>
+      <tr>
+        <th>Author</th>
+        <th>Time</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td><%= comment.name %> (<a href="mailto:<%= comment.email %>"><%= comment.email %></a>)</td>
+      <td><%= comment.created_at.strftime('%m/%d/%Y %I:%M%p') %></td>
+    </tr>
+    <tr>
+      <td><%= comment.body %></td>
+    </tr>
+  </tbody>
+</table>
+
+<br />
+<% end %>
+
+<h3>Add a comment</h3>
 <form class="well" action="/status/comment" method="post">
   <input type="hidden" name="id" value=<%= @status.id %>>
   <textarea name="body" rows='5' class="input-xxlarge"></textarea><br />

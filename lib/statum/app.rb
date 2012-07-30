@@ -167,7 +167,7 @@ module Statum
 
     get '/status/list' do
       authenticated!
-      @s = Item.all
+      @statuses = User.first(:login => session[:user][:login]).items
       erb :status_list
     end
 
