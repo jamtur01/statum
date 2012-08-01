@@ -157,9 +157,9 @@ module Statum
     post '/status/create' do
       authenticated!
       u = User.first(:login => session[:user][:login])
-      if u.items.create(
-        :status  => params[:status])
-          redirect '/', :success => 'Status created'
+      u.items.new(:status => params[:status]).tag_list = params[:tags]
+      if u.save
+        redirect '/', :success => 'Status created'
       else
         redirect '/', :error => errors(u)
       end
@@ -219,6 +219,13 @@ module Statum
         redirect back, :error => errors(s)
       end
     end
+
+    get '/status/tag/:name' do |name|
+      authenticated!
+      @tag = Tag.first(:name => name)
+      @statuses =  Item.all('taggings.tag_id' => @tag.id)
+      erb :status_tags
+   end
 
     helpers do
       def errors(obj)

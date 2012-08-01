@@ -35,6 +35,8 @@ GEM
     dm-sqlite-adapter (1.2.0)
       dm-do-adapter (~> 1.2.0)
       do_sqlite3 (~> 0.10.6)
+    dm-tags (1.2.0)
+      dm-core (~> 1.2.0)
     dm-timestamps (1.2.0)
       dm-core (~> 1.2.0)
     dm-transactions (1.2.0)
@@ -81,6 +83,7 @@ PLATFORMS
 DEPENDENCIES
   data_mapper
   dm-sqlite-adapter
+  dm-tags
   emk-sinatra-url-for
   sinatra
   sinatra-flash

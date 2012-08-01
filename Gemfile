@@ -1,5 +1,6 @@
 source "http://rubygems.org"
 gem "sinatra"
+gem "dm-tags"
 gem "sinatra-static-assets"
 gem "emk-sinatra-url-for"
 gem "data_mapper"

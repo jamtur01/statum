@@ -1,0 +1,21 @@
+<div class="page-header">
+  <h1>Status by Tag: <%= @tag.name %></h1>
+</div>
+
+
+    <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody>
+       <% @statuses.each do |status| %>
+       <tr>
+        <td><%= status.user_login %></td>
+        <td>Status from <a href="/status/<%= status.id %>"><%= status.created_at.strftime('%m/%d/%Y') %></a></td>
+      </tr>
+      <% end %>
+    </tbody>
+    </table>

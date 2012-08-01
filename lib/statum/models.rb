@@ -1,5 +1,6 @@
 require 'digest/sha1'
 require 'dm-validations'
+require 'dm-tags'
 require 'date'
 
 #DataMapper::Model.raise_on_save_failure = true
@@ -67,6 +68,8 @@ class Item
   belongs_to :user
 
   has n, :comments, :constraint => :destroy
+
+  has_tags
 
   property :id, Serial
   property :status, Text
