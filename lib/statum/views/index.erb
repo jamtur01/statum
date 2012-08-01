@@ -10,7 +10,7 @@
 <br />
 
 <% if @user %>
-  <h4>Current User:</h4> <br /><%= @user.name %> (<a href="mailto:<%= @user.email %>"><%= @user.email %></a>)
+  <h4>Current User:</h4> <br /><%= @name %> (<a href="mailto:<%= @user %>"><%= @user %></a>)
   <br /><br />
   <h3>Current Status Updates</h3>
   <br />
@@ -47,9 +47,6 @@
 
     <button type="submit" class="btn">Submit</button>
   </form>
-<% else %>
-<h3>To add a new status update <a href="/user/login">login</a>.</h3>
-<% end %>
 <br />
 
 </div>

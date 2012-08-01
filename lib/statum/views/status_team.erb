@@ -4,25 +4,3 @@
 
 <br />
 
-<% @teams.each do |team| %>
-  <p><%= "<b>Team:</b> #{team.name}" %></p><br />
-
-    <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Status</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% team.users.items.each do |item| %>
-      <tr>
-        <td><%= item.user_login %></td>
-        <td><%= item.status %></td>
-      </tr>
-      <% end %>
-    </tbody>
-    </table>
-
-  <br />
-<% end %>

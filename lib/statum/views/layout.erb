@@ -61,14 +61,12 @@
                   <li class="divider"></li>
                   <li class="nav-header">User Mangement</li>
                   <li><a href="<%= url('/user/list') %>">List Users</a></li>
-                  <li><a href="<%= url('/user/create') %>">Create User</a></li>
-                  <li><a href="<%= url('/user/delete') %>">Delete User</a></li>
                 </ul>
               </div>
             </li>
           </ul>
           <ul class="nav pull-right">
-            <li><%= link_to 'Login', '/user/login', {:condition => logged_in?, :location => '/user/logout', :name => 'Logout'} %></li>
+            <li><% if @user %><a href="/user/logout">Logout</a><% end %></li>
           </ul>
         </div>
       </div>

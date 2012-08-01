@@ -10,10 +10,7 @@
   <input type="hidden" name="id" value="<%= status.id %>">
   <textarea name="status" rows='20' class="input-xxlarge"><%= status.status %></textarea><br />
   <label>Tags: <%= status.tags.all.map { |t| "<a href='/status/tag/#{t.name}'>#{t.name}</a>" }.join(', ') %></label></br />
-  <%= "Created on #{status.created_at.strftime('%m/%d/%Y')}" %>
-  <label class="checkbox">
-    <input name="delete" type="checkbox"> Delete
-  </label>
+  <%= "Created on #{status.created_at.strftime('%m/%d/%Y')}" %><br /><br />
   <button type="submit" class="btn">Submit</button>
 </form>
 

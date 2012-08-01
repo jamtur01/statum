@@ -1,5 +1,6 @@
 source "http://rubygems.org"
 gem "sinatra"
+gem "sinatra-google-auth"
 gem "dm-tags"
 gem "pony"
 gem "tilt"

@@ -1,3 +1,4 @@
+ENV['GOOGLE_AUTH_URL'] = 'https://www.google.com/accounts/o8/id'
 $: << File.dirname(__FILE__)
 
 require 'sinatra'
@@ -5,6 +6,7 @@ require 'sinatra/url_for'
 require 'sinatra/static_assets'
 require 'sinatra/flash'
 require 'sinatra/redirect_with_flash'
+require 'sinatra/google-auth'
 require 'data_mapper'
 require 'json'
 require 'pp'
@@ -21,6 +23,7 @@ end
 module Statum
   class Application < Sinatra::Base
 
+    register Sinatra::GoogleAuth
     register Sinatra::StaticAssets
     register Sinatra::Flash
     helpers Sinatra::RedirectWithFlash
@@ -50,33 +53,32 @@ module Statum
 
     before do
       @app_name = "Statum"
-    end
-
-    get '/' do
-      @user = session[:user]
-      @statuses = User.first(:login => session[:user][:login]).items if @user
-      erb :index
-    end
-
-    get '/user/login' do
-      erb :login
-    end
-
-    post '/user/login' do
-      if session[:user] = User.authenticate(params[:login], params[:password])
-        redirect '/', :success => 'Logged in'
-      else
-        redirect '/user/login', :error => 'Login failed - try again!'
+      if user = session['user']
+        @user = User.first_or_create(:user => user)
+        @user.update(:name => session['name']) unless @user.name
       end
     end
 
+    def on_user(info)
+      session['name'] = info.name
+    end
+
+    get '/' do
+      authenticate
+      if session['user']
+        @user, @name = session['user'], session['name']
+        @statuses = User.first(:user => @user).items
+      end
+      erb :index
+    end
+
     get '/user/logout' do
-      session[:user] = nil
+      session['user'] = nil
       redirect '/', :success => 'Logout successful!'
     end
 
     get '/team/create' do
-      authenticated!
+      authenticate
       erb :team_create
     end
 
@@ -93,13 +95,13 @@ module Statum
     end
 
     get '/team/list' do
-      authenticated!
+      authenticate
       @teams = Team.all
       erb :team_list
     end
 
     get '/team/delete' do
-      authenticated!
+      authenticate
       erb :team_delete
     end
 
@@ -116,54 +118,10 @@ module Statum
       end
     end
 
-    get '/user/create' do
-      authenticated!
-      @teams = Team.all
-      erb :user_create
-    end
-
-    post '/user/create' do
-      authenticated!
-      team = Team.first(:name => params[:team])
-      if team.users.create(
-        :login    => params[:login],
-        :password => params[:password],
-        :name     => params[:name],
-        :email    => params[:email])
-        redirect '/user/create', :success => 'User created'
-      else
-        redirect '/user/create', :error => errors(team)
-      end
-    end
-
     get '/user/list' do
-      authenticated!
+      authenticate
       @users = User.all
       erb :user_list
-    end
-
-    get '/user/delete' do
-      authenticated!
-      erb :user_delete
-    end
-
-    post '/user/delete' do
-      authenticated!
-      if user = User.first(:login => params[:login])
-        items = Item.all(:user_login => params[:login])
-        if items.destroy
-        else
-          redirect '/user/delete', :error => errors(items)
-        end
-        if user.destroy
-          session[:user] = nil
-          redirect '/user/delete', :success => 'User and statuses deleted'
-        else
-          redirect '/user/delete', :error => errors(user)
-        end
-      else
-        redirect '/user/delete', :error => 'User does not exist'
-      end
     end
 
     post '/status/create' do
@@ -178,13 +136,13 @@ module Statum
     end
 
     get '/status/list' do
-      authenticated!
-      @statuses = User.first(:login => session[:user][:login]).items
+      authenticate
+      @statuses = User.first(:user => session['user']).items
       erb :status_list
     end
 
     get '/status/team' do
-      authenticated!
+      authenticate
       @teams = Team.all
       erb :status_team
     end
@@ -208,7 +166,7 @@ module Statum
     end
 
     get '/status/:id' do |id|
-      authenticated!
+      authenticate
       if @status = Item.first(:id => id)
         @comments = @status.comments
         pp @comments
@@ -233,7 +191,7 @@ module Statum
     end
 
     get '/status/tag/:name' do |name|
-      authenticated!
+      authenticate
       @tag = Tag.first(:name => name)
       @statuses =  Item.all('taggings.tag_id' => @tag.id)
       erb :status_tags
@@ -246,32 +204,6 @@ module Statum
           tmp << e
         end
         tmp
-      end
-
-      def logged_in?
-        return true if session[:user]
-        nil
-      end
-
-      def authenticated!
-        unless session[:user]
-          redirect '/', :error => 'Unauthorised without login.'
-        end
-      end
-
-      def link_to(name, location, alternative = false)
-        if alternative and alternative[:condition]
-          "<a href=#{alternative[:location]}>#{alternative[:name]}</a>"
-        else
-          "<a href=#{location}>#{name}</a>"
-        end
-      end
-
-      def random_string(len)
-        chars = ("a".."z").to_a + ("A".."Z").to_a + ("0".."9").to_a
-        str = ""
-        1.upto(len) { |i| str << chars[rand(chars.size-1)] }
-        return str
       end
     end
 

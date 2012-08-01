@@ -13,7 +13,7 @@
     <tbody>
        <% @statuses.each do |status| %>
        <tr>
-        <td><%= status.user_login %></td>
+        <td><%= status.user_user %></td>
         <td>Status from <a href="/status/<%= status.id %>"><%= status.created_at.strftime('%m/%d/%Y') %></a></td>
       </tr>
       <% end %>
