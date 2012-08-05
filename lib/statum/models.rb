@@ -2,6 +2,8 @@ require 'digest/sha1'
 require 'dm-validations'
 require 'dm-tags'
 require 'date'
+require 'send_status_email'
+require 'send_comment_email'
 
 #DataMapper::Model.raise_on_save_failure = true
 
@@ -31,7 +33,7 @@ class User
       :is_unique => "We already have that login. "
     }
   property :hashed_password,  String
-  property :email,            String, :required => true, :unique => true,
+  property :email,            String, :key => true, :required => true, :unique => true,
     :format => :email_address,
     :messages => {
       :presence  => "We need your email address. ",
@@ -77,6 +79,21 @@ class Item
   property :updated_on, DateTime
 
   validates_presence_of :status
+
+  before :save, :count
+  after :save do |item|
+    if @saved == 0
+      @saved = 1
+      Statum::SendStatusEmail.new(item)
+    end
+  end
+
+  def count
+    if !self.saved?
+     @saved = 0
+    end
+  end
+
 end
 
 class Comment
@@ -88,11 +105,25 @@ class Comment
   property :login,      String, :required => true
   property :name,       String, :required => true
   property :email,      String, :required => true
-  property :url,        String, :required => true
   property :body,       Text, :required => true
   property :created_at, DateTime, :default => DateTime.now
 
-  validates_presence_of :login, :name, :email, :url, :body
+  before :create, :count
+  after :create do |comment|
+    pp comment
+    if @saved == 0
+      @saved = 1
+      Statum::SendCommentEmail.new(comment)
+    end
+  end
+
+  def count
+    if !self.saved?
+     @saved = 0
+    end
+  end
+
+  validates_presence_of :login, :name, :email, :body
 end
 
 DataMapper.finalize

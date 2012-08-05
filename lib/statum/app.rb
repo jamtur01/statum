@@ -6,7 +6,17 @@ require 'sinatra/static_assets'
 require 'sinatra/flash'
 require 'sinatra/redirect_with_flash'
 require 'data_mapper'
+require 'json'
 require 'pp'
+
+def load_configuration(file, name)
+  if !File.exist?(file)
+    puts "There's no configuration file at #{file}!"
+    exit!
+  end
+  json = File.read(file)
+  Statum.const_set(name, JSON.parse(json))
+end
 
 module Statum
   class Application < Sinatra::Base
@@ -19,6 +29,8 @@ module Statum
 
     set :public_folder, File.join(File.dirname(__FILE__), 'public')
     set :views, File.join(File.dirname(__FILE__), 'views')
+
+    load_configuration("config/config.json", "CONFIG")
 
     configure :development do
       set    :session_secret, "here be dragons"
@@ -41,8 +53,8 @@ module Statum
     end
 
     get '/' do
-      @u = session[:user]
-      @statuses = User.first(:login => session[:user][:login]).items if @u
+      @user = session[:user]
+      @statuses = User.first(:login => session[:user][:login]).items if @user
       erb :index
     end
 
@@ -70,13 +82,13 @@ module Statum
 
     post '/team/create' do
       authenticated!
-      t = Team.new
-      t.name = params[:name]
-      t.description = params[:description]
-      if t.save
+      team = Team.new
+      team.name = params[:name]
+      team.description = params[:description]
+      if team.save
         redirect '/team/create', :success => 'Team created'
       else
-        redirect '/team/create', :error => errors(t)
+        redirect '/team/create', :error => errors(team)
       end
     end
 
@@ -93,11 +105,11 @@ module Statum
 
     post '/team/delete' do
       authenticated!
-      if t = Team.first(:name => params[:name])
-        if t.destroy
+      if team = Team.first(:name => params[:name])
+        if team.destroy
           redirect '/team/delete', :success => 'Team deleted'
         else
-          redirect '/user/delete', :error => errors(t)
+          redirect '/user/delete', :error => errors(team)
         end
       else
         redirect '/team/delete', :error => 'Team does not exist'
@@ -112,15 +124,15 @@ module Statum
 
     post '/user/create' do
       authenticated!
-      t = Team.first(:name => params[:team])
-      if t.users.create(
+      team = Team.first(:name => params[:team])
+      if team.users.create(
         :login    => params[:login],
         :password => params[:password],
         :name     => params[:name],
         :email    => params[:email])
         redirect '/user/create', :success => 'User created'
       else
-        redirect '/user/create', :error => errors(t)
+        redirect '/user/create', :error => errors(team)
       end
     end
 
@@ -137,17 +149,17 @@ module Statum
 
     post '/user/delete' do
       authenticated!
-      if u = User.first(:login => params[:login])
-        s = Item.all(:user_login => params[:login])
-        if s.destroy
+      if user = User.first(:login => params[:login])
+        items = Item.all(:user_login => params[:login])
+        if items.destroy
         else
-          redirect '/user/delete', :error => errors(s)
+          redirect '/user/delete', :error => errors(items)
         end
-        if u.destroy
+        if user.destroy
           session[:user] = nil
           redirect '/user/delete', :success => 'User and statuses deleted'
         else
-          redirect '/user/delete', :error => errors(u)
+          redirect '/user/delete', :error => errors(user)
         end
       else
         redirect '/user/delete', :error => 'User does not exist'
@@ -156,12 +168,12 @@ module Statum
 
     post '/status/create' do
       authenticated!
-      u = User.first(:login => session[:user][:login])
-      u.items.new(:status => params[:status]).tag_list = params[:tags]
-      if u.save
+      user = User.first(:login => session[:user][:login])
+      item = user.items.new(:status => params[:status]).tag_list = params[:tags]
+      if user.save
         redirect '/', :success => 'Status created'
       else
-        redirect '/', :error => errors(u)
+        redirect '/', :error => errors(user)
       end
     end
 
@@ -179,15 +191,15 @@ module Statum
 
     post '/status/update' do
       authenticated!
-      s = Item.first(:id => params[:id])
+      item = Item.first(:id => params[:id])
       if params[:delete]
-        if s.destroy
+        if item.destroy
           redirect '/', :success => 'Item deleted'
         else
-          redirect back, :error => errors(s)
+          redirect back, :error => errors(item)
         end
       else
-        if s.update(:status => params[:status])
+        if item.update(:status => params[:status])
           redirect back, :success => 'Item updated'
         else
           redirect back
@@ -199,6 +211,7 @@ module Statum
       authenticated!
       if @status = Item.first(:id => id)
         @comments = @status.comments
+        pp @comments
       else
         redirect '/' unless @status
       end
@@ -207,16 +220,15 @@ module Statum
 
     post '/status/comment' do
       authenticated!
-      s = Item.first(:id => params[:id])
-      if s.comments.create(
+      item = Item.first(:id => params[:id])
+      if item.comments.create(
         :login => session[:user][:login],
         :email => session[:user][:email],
         :name  => session[:user][:name],
-        :url   => "url",
         :body  => params[:body])
           redirect back, :success => 'Comment created'
       else
-        redirect back, :error => errors(s)
+        redirect back, :error => errors(item)
       end
     end
 

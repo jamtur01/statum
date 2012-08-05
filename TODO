@@ -1,4 +1,4 @@
 * Email gateway
-* Email sending
 * Self subscribe teams / one-user-to-many teams
 * Subcriptions
+* Local auth versus Google Auth versus OmniAuth?

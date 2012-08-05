@@ -1,0 +1,27 @@
+<%# The email which is sent when a new status is created.
+  #  - data
+%>
+
+<font face="monospace" size="3">
+<h1>Statum</h1>
+<h2>New Status created at <%= data['created_at'] %> by <%= data['user_login'] %> </h2>
+
+Status is:
+
+<%= data['status'] %>
+
+<br />
+
+Tags: <%= data['frozen_tag_list'] %>
+
+<br />
+
+</font>
+<br />
+
+You can find this status at <%= data['url'] %> 
+
+<br />
+
+--<br />
+You're receiving this email because ....

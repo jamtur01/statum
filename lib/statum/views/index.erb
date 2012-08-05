@@ -9,8 +9,8 @@
 
 <br />
 
-<% if @u %>
-  <h4>Current User:</h4> <br /><%= @u.name %> (<a href="mailto:<%= @u.email %>"><%= @u.email %></a>)
+<% if @user %>
+  <h4>Current User:</h4> <br /><%= @user.name %> (<a href="mailto:<%= @user.email %>"><%= @user.email %></a>)
   <br /><br />
   <h3>Current Status Updates</h3>
   <br />
@@ -30,7 +30,7 @@
 <br />
 <br />
 
-<% if @u %>
+<% if @user %>
   <h3>Add a new status update</h3>
 
   <form class="well" action="/status/create" method="post">

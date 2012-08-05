@@ -1,0 +1,23 @@
+<%# The email which is sent when a new comment is created.
+  #  - data
+%>
+
+<font face="monospace" size="3">
+<h1>Statum</h1>
+<h2>New comment created on status <%= data['id'] %> created at <%= data['created_at'] %> by <%= data['user_login'] %> </h2>
+
+Status is:
+
+<%= data['comment'] %>
+
+<br />
+
+</font>
+<br />
+
+You can find this comment at <%= data['url'] %>
+
+<br />
+
+--<br />
+You're receiving this email because ....
